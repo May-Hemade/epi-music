@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 import MusicList from "./MusicList"
 import { SearchResult, Track } from "./SearchResult"
-
+type HomeParams = {
+  search?: string
+}
 function Home() {
+  const params = useParams<HomeParams>()
   const [tracks, setTracks] = useState<Track[]>([])
-  const getMusic = async (search: string) => {
+  const getMusic = async (search?: string) => {
     try {
+      const searchQuery = search ? search : "taylor"
       let response = await fetch(
-        `https://striveschool-api.herokuapp.com/api/deezer/search?q=${search}`
+        `https://striveschool-api.herokuapp.com/api/deezer/search?q=${searchQuery}`
       )
       if (response.ok) {
         let result: SearchResult = await response.json()
@@ -18,7 +23,7 @@ function Home() {
   }
 
   useEffect(() => {
-    getMusic("taylor")
+    getMusic(params?.search)
   }, [])
 
   return (
